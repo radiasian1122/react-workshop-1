@@ -25,6 +25,25 @@ function Cocktails({ cocktailList, clickHandler }) {
   );
 }
 
+function Search({ updateList }) {
+  const getUpdatedList = () => {
+    console.log("working");
+  };
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="Search Cocktail by Ingredient"
+        onKeyUp={(e) => {
+          if (e.key === "Enter" || (e.keyCode === 13 && this.value != "")) {
+            getUpdatedList();
+          }
+        }}
+      ></input>
+    </div>
+  );
+}
+
 function App() {
   const [cocktailList, setCocktailList] = useState([
     { strDrink: "Fetching drinks...", strDrinkThumb: null },
@@ -56,7 +75,6 @@ function App() {
   };
 
   const removeCocktail = (drink) => {
-    // TODO
     let removeCocktails = favorites.filter(
       (cocktail) => cocktail.strDrink != drink.strDrink
     );
@@ -71,6 +89,7 @@ function App() {
 
   return (
     <>
+      <Search updateList={setCocktailList} />
       <Cocktails
         className="cocktail-list favorites"
         cocktailList={favorites}
