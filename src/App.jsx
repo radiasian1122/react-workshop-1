@@ -50,11 +50,36 @@ function Search({ updateList }) {
     </div>
   );
 }
-
+//main component
 function App() {
+  //use state - creating state of application
   const [cocktailList, setCocktailList] = useState([
     { strDrink: "Fetching drinks...", strDrinkThumb: null },
   ]);
+
+  /*
+  let count = 0
+
+  useEffect(()=>{
+    console.log(count)
+    }, count) // anytime count changes, useEffect runs - can this be a function?
+    count++
+  */
+  // useState returns [data, function]
+  // JS allows for an array of variables to be assigned an array of data
+  // let [x,y] = ()=>  {return [20,30]}
+  // x -> 20
+  // y -> 30
+  // let [n,m] = ['hello', ()=>{}]
+  // n -> 'hello'
+  // m -> ()=>{}
+
+  /*
+    useState = (initialState) => {
+      
+      return [initialState, ()=>{}]
+    }
+  */
   const [favorites, setFavorites] = useState([
     { strDrink: "No favorites added.", strDrinkThumb: null },
   ]);
