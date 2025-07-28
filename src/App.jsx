@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import js from "@eslint/js";
 
 function Cocktail({ drink, onCocktailClick }) {
   return (
@@ -15,9 +16,9 @@ function Cocktail({ drink, onCocktailClick }) {
   );
 }
 
-function Cocktails({ cocktailList, clickHandler }) {
+function Cocktails({ cocktailList, clickHandler, className }) {
   return (
-    <div>
+    <div className={className}>
       {cocktailList.map((drink) => {
         return <Cocktail onCocktailClick={clickHandler} drink={drink} />;
       })}
@@ -26,8 +27,14 @@ function Cocktails({ cocktailList, clickHandler }) {
 }
 
 function Search({ updateList }) {
-  const getUpdatedList = () => {
-    console.log("working");
+  const getUpdatedList = (ingredient) => {
+    fetch(`http://localhost:3001/search/${ingredient}`)
+      .then((httpResponse) => httpResponse.json())
+      .then((jsonResponse) => {
+        console.log(jsonResponse);
+        updateList(jsonResponse.drinks);
+        // setCocktailList(jsonResponse.drinks.slice(0, 10));
+      });
   };
   return (
     <div>
@@ -35,8 +42,8 @@ function Search({ updateList }) {
         type="text"
         placeholder="Search Cocktail by Ingredient"
         onKeyUp={(e) => {
-          if (e.key === "Enter" || (e.keyCode === 13 && this.value != "")) {
-            getUpdatedList();
+          if ((e.key === "Enter" || e.keyCode === 13) && e.target.value != "") {
+            getUpdatedList(e.target.value);
           }
         }}
       ></input>
@@ -55,13 +62,13 @@ function App() {
   useEffect(() => {
     fetch("http://localhost:3001/")
       .then((httpResponse) => httpResponse.json())
-      .then((data) => {
-        setCocktailList(data.drinks.slice(0, 10));
+      .then((jsonResponse) => {
+        setCocktailList(jsonResponse.drinks.slice(0, 10));
       });
   }, []);
 
   const addCocktail = (drink) => {
-    let cocktails = favorites.map((drink) => drink);
+    let cocktails = favorites.map((favoriteDrink) => favoriteDrink);
     if (cocktails[0].strDrink === "No favorites added.") {
       cocktails.splice(0, 1, drink);
     } else if (
@@ -70,7 +77,6 @@ function App() {
     ) {
       cocktails.push(drink);
     }
-
     setFavorites(cocktails);
   };
 
@@ -89,12 +95,14 @@ function App() {
 
   return (
     <>
-      <Search updateList={setCocktailList} />
+      <h3>Favorites</h3>
       <Cocktails
         className="cocktail-list favorites"
         cocktailList={favorites}
         clickHandler={removeCocktail}
       />
+      <h3>Drinks</h3>
+      <Search updateList={setCocktailList} />
       <Cocktails
         className="cocktail-list results"
         cocktailList={cocktailList}
